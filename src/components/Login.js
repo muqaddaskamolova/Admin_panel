@@ -1,49 +1,77 @@
-import axios from "axios";
-import {Navigate} from "react-router-dom";
-import {useState} from "react";
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-export const Login = () => {
-    const [email, setEmail] = useState('');
+const Login = () => {
+    const navigate = useNavigate();
+    const [phonenumber, setNumber] = useState('');
     const [password, setPassword] = useState('');
-    const [navigate, setNavigate] = useState(false);
-
-    const submit = async e => {
+    
+    const loginSubmit = async (e) => {
         e.preventDefault();
+        try {
+            const response = await fetch('http://autoapi.dezinfeksiyatashkent.uz/api/auth/signin', {
+                method: 'POST',
+                mode: 'no-cors', 
+                headers: {
+                    'Content-Type': 'application/json' // Corrected content type
+                },
+                body: JSON.stringify({ 
+                    phone_number: phonenumber,
+                    password: password
+                })
+            });
 
-        const {data} = await axios.post('http://localhost:3000/api/login', {
-            email, password
-        }, {withCredentials: true});
+            const element = await response.json();
 
-        axios.defaults.headers.common['Authorization'] = `Bearer ${data['token']}`;
+            console.log(JSON.stringify(element)); // Moved console.log outside of the body
 
-        setNavigate(true);
-    }
+            if (element?.success === true) {
+                localStorage.setItem('mytoken', element?.data?.tokens?.accessToken?.token);
+                toast.success(element?.message);
+                navigate('/dashboard');
+            } else {
+                toast.error(element?.message);
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error('An error occurred while trying to log in.');
+        }
+    };
 
-    if (navigate) {
-        return <Navigate to="/"/>;
-    }
-
-    return <main className="form-signin">
-        <form onSubmit={submit}>
-            <h1 className="h3 mb-3 fw-normal">Please sign in</h1>
-
-            <div className="form-floating">
-                <input type="email" className="form-control" id="floatingInput" placeholder="name@example.com"
-                       onChange={e => setEmail(e.target.value)}
+    return (
+        <section>
+            <h1>Sign In</h1>
+            <form>
+                <label htmlFor="number">Phonenumber:</label>
+                <input
+                    type="number"
+                    id="number"
+                    autoComplete="off"
+                    onChange={(e) => setNumber(e.target.value)}
+                    value={phonenumber}
+                    required minLength={7}
                 />
-                <label htmlFor="floatingInput">Email address</label>
-            </div>
-
-            <div className="form-floating">
-                <input type="password" className="form-control" id="floatingPassword" placeholder="Password"
-                       onChange={e => setPassword(e.target.value)}
+                <label htmlFor="password">Password:</label>
+                <input
+                    type="password"
+                    id="password"
+                    onChange={(e) => setPassword(e.target.value)}
+                    value={password}
+                    required minLength={4}
                 />
-                <label htmlFor="floatingPassword">Password</label>
-            </div>
-
-            <button className="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
-        </form>
-    </main>
-}
+                <button onClick={loginSubmit}>Sign In</button>
+            </form>
+            <ToastContainer />
+            <p>
+                Need an Account?<br />
+                <span className="line">
+                    <Link to="/register">Sign Up</Link>
+                </span>
+            </p>
+        </section>
+    );
+};
 
 export default Login;
