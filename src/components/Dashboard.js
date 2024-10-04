@@ -181,7 +181,7 @@ export const Dashboard = () => {
                             <td>{item?.name_en}</td>
                             <td>{item?.name_ru}</td>
                             <td>
-                                <img src={`path_to_images/${item?.image_src}`} alt={item?.name_en} style={{ width: '100px' }} />
+                                <img src={`http://autoapi.dezinfeksiyatashkent.uz/api/uploadsimages/${item?.image_src}`} alt={item?.name_en} style={{ width: '100px' }} />
                             </td>
                             <td className='d-flex justify-content-around'>
                                 <button className="btn btn-warning text-light me-1" onClick={() => handleEdit(item.id)}>
