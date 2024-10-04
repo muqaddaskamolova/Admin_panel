@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 
 const PHONE_REGEX = /^\+?[0-9]{7,15}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
-const REGISTER_URL = 'http://autoapi.dezinfeksiyatashkent.uz/api/auth/register';
+const REGISTER_URL = 'https://api.dezinfeksiyatashkent.uz/api/auth/register';
 
 const Register = () => {
     const userRef = useRef();
@@ -61,7 +61,7 @@ const Register = () => {
                     withCredentials: true
                 }
             );
-            // TODO: remove console.logs before deployment
+            
             console.log(JSON.stringify(response?.data));
             //console.log(JSON.stringify(response))
             setSuccess(true);

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://autoapi.dezinfeksiyatashkent.uz/api/';
+const BASE_URL = 'https://api.dezinfeksiyatashkent.uz/api/';
 
 const instance = axios.create({
     baseURL: BASE_URL,

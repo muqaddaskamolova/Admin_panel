@@ -11,9 +11,8 @@ const Login = () => {
     const loginSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch('http://autoapi.dezinfeksiyatashkent.uz/api/auth/signin', {
+            const response = await fetch('https://api.dezinfeksiyatashkent.uz/api/auth/signin', {
                 method: 'POST',
-                mode: 'no-cors', 
                 headers: {
                     'Content-Type': 'application/json' // Corrected content type
                 },

@@ -41,7 +41,7 @@ function ProtectedComponent() {
         const token = localStorage.getItem('mytoken');
         (async () => {
             try {
-                const { data } = await axios.get('http://autoapi.dezinfeksiyatashkent.uz/api/auth/me', {
+                const { data } = await axios.get('https://api.dezinfeksiyatashkent.uz/api/', {
                     headers: {
                         Authorization: `Bearer ${token}`, // Correct Authorization header
                     }
