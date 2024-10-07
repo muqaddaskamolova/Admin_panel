@@ -6,15 +6,28 @@ export const Dashboard = () => {
     const [nameEn, setNameEn] = useState('');
     const [nameRu, setNameRu] = useState('');
     const [image, setImage] = useState(null);
+    const [imagePreview, setImagePreview] = useState(null); // To hold the image preview
     const [openModal, setOpenModal] = useState(false);
     const [editOpenModal, setEditOpenModal] = useState(false);
     const [editCategoryId, setEditCategoryId] = useState(null);
     const [errorMessage, setErrorMessage] = useState('');
 
-    const BASE_URL = process.env.REACT_APP_BASE_URL || "https://api.dezinfeksiyatashkent.uz/api/sources/";
+    const BASE_URL = process.env.REACT_APP_BASE_URL || "https://api.dezinfeksiyatashkent.uz/api/uploads/images/";
 
     const handleImageChange = (e) => {
-        setImage(e.target.files[0]);
+        const file = e.target.files[0];
+        setImage(file);
+
+        // Create a preview of the selected image
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setImagePreview(reader.result);
+        };
+        if (file) {
+            reader.readAsDataURL(file);
+        } else {
+            setImagePreview(null);
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -32,7 +45,8 @@ export const Dashboard = () => {
             if (editOpenModal) {
                 const updatedCategory = category.map(item =>
                     item.id === editCategoryId
-                        ? { id: editCategoryId, name_en: nameEn, name_ru: nameRu, image_src: imageSrc }
+                        ? { id: editCategoryId, name_en: nameEn, name_ru: nameRu, image_src: `https://api.dezinfeksiyatashkent.uz/api/uploads/images/${imageSrc}`
+                        }
                         : item
                 );
                 setCategory(updatedCategory);
@@ -42,7 +56,7 @@ export const Dashboard = () => {
                     id: category.length + 1,
                     name_en: nameEn,
                     name_ru: nameRu,
-                    image_src: imageSrc 
+                    image_src: imageSrc
                 };
                 setCategory([...category, newCategory]);
                 toast.success('Category added successfully!');
@@ -67,6 +81,7 @@ export const Dashboard = () => {
         setNameEn('');
         setNameRu('');
         setImage(null);
+        setImagePreview(null); // Reset image preview
         setOpenModal(false);
         setEditOpenModal(false);
         setErrorMessage('');
@@ -77,6 +92,7 @@ export const Dashboard = () => {
         setNameEn(categoryToEdit.name_en);
         setNameRu(categoryToEdit.name_ru);
         setImage(null); 
+        setImagePreview(categoryToEdit.image_src); // Set image preview to existing image
         setEditCategoryId(id);
         setEditOpenModal(true);
         setOpenModal(true);
@@ -140,7 +156,7 @@ export const Dashboard = () => {
                                             required={!editOpenModal}
                                         />
                                     </div>
-                                    {image && <img src={URL.createObjectURL(image)} alt="Selected" className="preview-image" />}
+                                    {imagePreview && <img src={imagePreview} alt="Selected" className="preview-image" />} {/* Show the preview */}
                                     {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
                                 </div>
                                 <div className="modal-footer">
